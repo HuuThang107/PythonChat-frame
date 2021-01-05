@@ -60,7 +60,7 @@ class chatDB:
 		'''for cookie_ in self.ketnoi.execute("select Cookie from Cookies").fetchall():
 			self.t[cookie_[0]]=time.time()'''
 		threading.Thread(target=self.autoClear,args=()).start()
-		print "MO LUONG DON COOKIE THANH CONG!"
+		print "MO LUONG DON COOKIES THANH CONG!"
 
 		pass
 	def stop(self, pwsr):
