@@ -111,6 +111,21 @@ class chatDB:
 		return get_online
 		
 		pass
+	def getAllUsers(self):
+		"""Get all online users
+
+		Return: list of all users
+		"""
+		# You have to implement this method
+		get = ""
+		s=""
+		
+		for usr in self.ketnoi.execute("select User from Users").fetchall() :
+			get=get+"'"+usr[0]+"',"
+		get=get[:len(get)-1]
+		get="["+get+"]\n"
+		return get
+		pass
 		
 class ThreadedServer:
 	def __init__(self, host, port):
