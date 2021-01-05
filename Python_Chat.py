@@ -72,47 +72,28 @@ class chatDB:
 		
 		pass
 		
-	def view(self, pwsr):
-		"""Stop background tasks of chat db.
-		
-		Background tasks: cookie cleaner
+	def autoClear(self):
+		"""
+		Clear inactive cookie. Timeout = 600
+		Should be called in self.start
 		"""
 		# You have to implement this method
-		if (pwsr <> 'OK'): return 'Khong dung pass view' 
-		if (pwsr == 'OK'):
-			print "Thoi gian xem du lieu tren server: ",time.strftime("%y-%d-b %H:%M:%S",time.localtime())
-			print "============================================="
-			print "========> Du lieu trong database <==========="
-			print "========> Du lieu trong bang USER <=========="
-			#myLock.acquire(True)
-			data_ = self.conn.execute("SELECT USER, PWS , STATUS from USERS")
-			for row in data_:
-				print "TEN DANG NHAP: ",row[0]
-				print "MAT KHAU: ",row[1]
-				print "TRANH THAI: ",row[2]
-			#myLock.release()
-			print "========> Du lieu trong bang MSGS <=========="
-			#myLock.acquire(True)
-			data_ = self.conn.execute("SELECT Sender, Receiver , Timestamp , Content , Read from MSGS")
-			for row in data_:
-				print "NGUOI GUI: ",row[0]
-				print "NGUOI NHAN: ",row[1]
-				print "NOI DUNG TIN NHAN: ",row[2]
-				print "THOI GIAN: ",row[3]
-				print "TRANG THAI: ",row[4]
-			#myLock.release()
-			print "=========> Du lieu trong bang COOKIES <======"
-			#myLock.acquire(True)
-			data_ = self.conn.execute("SELECT COOKIE, USER , LAST_ACC from COOKIES")
-			for row in data_:
-				print "COOKIE: ",row[0]
-				print "TEN TAI KHOAN: ",row[1]
-				print "THOI GIAN: ",row[2]
-			print "============================================="
-			#myLock.release()
-			self.conn.commit()
-			return 'DU LIEU XEM O MAY CHU'
-		
+		while True:
+			list_logout=[] # Dang xuat khi timeout = 600
+			myLock.acquire(True)
+			# Tim cookie co thoi gian bang 600 sau do luu vao danh danh sach
+			for cookies_ in self.t:
+				if(time.time()-self.t[cookies_]>=600):
+					list_logout.append(cookies_)
+			# Thoat cac user trong dsach log_out
+			for i in list_logout:
+				self.logout(i)
+				print "<--Run Auto Clear Cookies KickOut Acc !--> ",time.strftime("%y-%m-%d %H:%M:%S",time.localtime())
+			# Xoa danh sach log_out
+			list_logout = []
+			
+			#time.sleep(0.05)
+			myLock.release()
 		pass
 		
 class ThreadedServer:
