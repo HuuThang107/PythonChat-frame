@@ -126,6 +126,26 @@ class chatDB:
 		get="["+get+"]\n"
 		return get
 		pass
+	def register(self, usr, wd):
+		"""Register user USR with word WD
+
+		USR must be a 3-10 byte string.
+		Return:
+			'success': register successfully
+			'invalid_usr': failed. The user name is not valid.
+			'invalid_': failed. The word is not valid.
+		"""
+		# You have to implement this method
+		
+		if(self.ketnoi.execute("select * from Users where User=?",(usr,)).fetchall()!=[]):
+			return '[invalid_usr]'
+		if(len(usr)<3 or len(usr)>10):
+			return 'invalid_'
+		self.ketnoi.execute("insert into Users values (?,?,'off')",(usr,hashlib.sha256(wd).hexdigest())) # hashlib.sha256 ham bam mat khau
+		self.conn.commit()
+		return '[success]'
+		
+		pass
 		
 class ThreadedServer:
 	def __init__(self, host, port):
