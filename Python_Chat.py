@@ -95,6 +95,22 @@ class chatDB:
 			#time.sleep(0.05)
 			myLock.release()
 		pass
+	def getOnlineUsers(self):
+		"""Get all online users
+
+		Return: list of online users
+		"""
+		# You have to implement this method
+		get_online = ""
+		
+		for usr in self.ketnoi.execute("select User from Users where Status='on'").fetchall():
+			get_online=get_online+"'"+usr[0]+"',"
+		if (get_online==''): return '[]'
+		get_online=get_online[:len(get_online)-1] # do dai cua user tru 1
+		get_online="["+get_online+"]\n"
+		return get_online
+		
+		pass
 		
 class ThreadedServer:
 	def __init__(self, host, port):
