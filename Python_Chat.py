@@ -173,7 +173,27 @@ class chatDB:
 		return "['success','"+str(a)+"']"
 		
 		pass
+	def logout(self, cookie):
+		"""Set owner of cookie as logged out
+		Remove cookie from database
 
+		Return:
+			'success': log-out successfully
+			'invalid': log-out failed. The cookie does not exist.
+		"""
+		# You have to implement this method
+		
+		get =""
+		get=self.ketnoi.execute("select* from Cookies where Cookie=?",(cookie,)).fetchone()
+		if(get==None):
+			return '[invalid]'
+		self.ketnoi.execute("update Users set Status='off' where User=?",(get[1],))
+		self.ketnoi.execute("delete from Cookies where Cookie=?",(cookie,))
+		self.conn.commit()
+		del self.t[cookie]
+		return '[success]'
+		
+		pass
 		
 class ThreadedServer:
 	def __init__(self, host, port):
