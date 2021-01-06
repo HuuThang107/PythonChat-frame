@@ -146,6 +146,34 @@ class chatDB:
 		return '[success]'
 		
 		pass
+	def login(self, usr, wd):
+		"""Set user USR as logged in.
+
+		Return:
+			['success', cookie]: login successfully. Cookie is a string specify the session.
+			'invalid_usr': login failed because of invalid user name.
+			'invalid_wd': login failed because of wrong word.
+		"""
+		# You have to implement this method
+		
+		get=self.ketnoi.execute("select * from Users where User=?",(usr,)).fetchone()
+		if(get==None):
+			return '[invalid_usr]'
+		if(get[1]!=hashlib.sha256(wd).hexdigest()):  # ham bam mat khau
+			return '[invalid_wd]'
+		while(1):
+			a=randint(10**15,10**16-1)
+			if(self.ketnoi.execute("select cookie from Cookies where Cookie=?",(str(a),)).fetchall()==[]):
+				break
+		self.ketnoi.execute("insert into Cookies values(?,?,?)",(str(a),usr,time.strftime("%y-%d-%b %H:%M:%S",time.localtime()),))
+		self.ketnoi.execute("update Users set Status='on' where User=?",(usr,))
+		self.conn.commit()
+		self.t[str(a)]=time.time()
+		print self.t
+		return "['success','"+str(a)+"']"
+		
+		pass
+
 		
 class ThreadedServer:
 	def __init__(self, host, port):
