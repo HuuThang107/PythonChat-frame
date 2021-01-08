@@ -194,6 +194,28 @@ class chatDB:
 		return '[success]'
 		
 		pass
+    def sendMsg(self, cookie, to, content):
+		"""Send message with content CONTENT from owner of COOKIE to TO.
+
+		The time will be set to the current time on server.
+
+		Return value:
+			+ 'invalid_usr': if usr is invalid
+			+ 'invalid_cook': if cookie is invalid
+			+ 'success'
+		"""
+		
+		get=self.ketnoi.execute("select User from Cookies where Cookie=?",(cookie,)).fetchone()
+		if(get==None): return 'invalid_cook'
+		if(self.ketnoi.execute("select * from Users where User=?",(to,)).fetchone()==None):
+			return '[invalid_usr]'
+		self.ketnoi.execute("insert into Msgs values(?,?,?,?,?)",(get[0],to,content,time.strftime("%y-%d-%b %H:%M:%S",time.localtime()),'yet',))
+		self.conn.commit()
+		self.t[cookie]=time.time()
+		return '[success]'
+		# You have to implement this method
+		
+		pass
 		
 class ThreadedServer:
 	def __init__(self, host, port):
