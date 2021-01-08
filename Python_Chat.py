@@ -216,6 +216,37 @@ class chatDB:
 		# You have to implement this method
 		
 		pass
+    def getNewMsgs(self, cookie, frm):
+		"""Return all new messages from FRM sending to owner of COOKIE.
+		All those new messages will be set to be already read.
+
+		Return value:
+			+ 'invalid_usr': if usr is invalid
+			+ 'invalid_cook': if cookie is invalid
+			+ [[content, time],...]
+				example: [['Hello', '2018-20-06 18:21:26']]
+		"""
+		
+		receiver=self.ketnoi.execute("select User from Cookies where Cookie=?",(cookie,)).fetchone()
+		if(receiver==None):
+			return 'invalid_cook'
+		if(self.ketnoi.execute("select User from Users where User=?",(frm,)).fetchone()==None):
+			return "invalid_usr"
+		self.ketnoi.execute("update Msgs set Read='already' where Sender=? and Receiver=?",(frm,receiver[0],))
+		list=[]
+		s=""
+		for i in self.ketnoi.execute("select Content, Timestamp from Msgs where Sender=? and Receiver=?",(frm,receiver[0],)):
+			s = "'"+i[0]+"', '"+i[1]+"'"
+			list.append(s)
+		self.t[cookie]=time.time() #luu thoi gian hoat dong cua cookie
+		s=""
+		for i in list:
+			s = s+"["+i+"] "
+		s = "["+s+"]"
+		return s
+		# You have to implement this method
+		
+		pass
 		
 class ThreadedServer:
 	def __init__(self, host, port):
