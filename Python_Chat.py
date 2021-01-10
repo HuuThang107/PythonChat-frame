@@ -247,6 +247,42 @@ class chatDB:
 		# You have to implement this method
 		
 		pass
+	def getAllMsgs(self, cookie, usr2):
+		"""Return all messages between owner of COOKIE and USR2.
+		All new messages will be set to be already read.
+
+		Return value:
+			+ 'invalid_usr': if usr is invalid
+			+ 'invalid_cook': if cookie is invalid
+			+ [[sender, receiver, content, time, status],...]
+				example: [['manh', 'thanh', 'Hello', '2018-20-06 18:21:26', 'yet']]
+		"""
+		# You have to implement this method
+		
+		if(self.ketnoi.execute("select* from Users where User=?",(usr2,)).fetchone()==None):
+			return 'invalid_usr'
+		get=self.ketnoi.execute("select User from Cookies where Cookie=?",(cookie,)).fetchone()
+		if(get==None): return 'invalid_cook'
+		list=[]
+		print get[0],"=>",usr2
+		
+		for msg in self.ketnoi.execute("select * from Msgs where Sender=? and Receiver=? ",(get[0],usr2,)):
+			s = ""
+			s = "'"+msg[0]+"', '"+msg[1]+"', '"+msg[2]+"', '"+msg[3]+"', '"+msg[4]+"'"
+			list.append(s)
+		
+		for msg in self.ketnoi.execute("select * from Msgs where Sender=? and Receiver=? ",(usr2,get[0],)):
+			s=""
+			s = "'"+msg[0]+"', '"+msg[1]+"', '"+msg[2]+"', '"+msg[3]+"', '"+msg[4]+"'"
+			list.append(s)
+		self.t[cookie]=time.time() 
+		s=""
+		for i in list:
+			s = s+"["+i+"] "
+		s = "["+s+"]"
+		return s
+		
+		pass
 		
 class ThreadedServer:
 	def __init__(self, host, port):
